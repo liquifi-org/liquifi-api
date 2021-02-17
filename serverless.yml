@@ -10,6 +10,11 @@ provider:
   memorySize: 320 # optional, in MB, default is 1024
   timeout: 30 # optional, in seconds, default is 6
   logRetentionInDays: 1
+  vpc:
+    securityGroupIds:
+      - sg-03016ac5f26cbbb92
+    subnetIds:
+      - subnet-0cf5e706c6e5f4964
   environment:
     jsonRpcProvider: ${self:custom.config.${opt:ethereum-network}.jsonRpcProvider}
     poolFactoryAddress: ${self:custom.config.${opt:ethereum-network}.poolFactoryAddress}
