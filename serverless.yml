@@ -1,0 +1,128 @@
+service:
+  name: liquifi-api-auth
+
+frameworkVersion: ">=2.22.0 <3.0.0"
+
+provider:
+  name: aws
+  region: eu-central-1
+  runtime: nodejs14.x
+  memorySize: 320 # optional, in MB, default is 1024
+  timeout: 30 # optional, in seconds, default is 6
+  logRetentionInDays: 1
+  vpc:
+    securityGroupIds:
+      - sg-03016ac5f26cbbb92
+    subnetIds:
+      - subnet-0cf5e706c6e5f4964
+  environment:
+    jsonRpcProvider: ${self:custom.config.${opt:ethereum-network}.jsonRpcProvider}
+    poolFactoryAddress: ${self:custom.config.${opt:ethereum-network}.poolFactoryAddress}
+    theGraphUri: ${self:custom.config.${opt:ethereum-network}.theGraphUri}
+
+  apiGateway:
+    usagePlan:
+      - low: # 5 QPS
+          quota:
+            limit: 500000 # 5 * 60 * 60 * 24
+            period: DAY
+          throttle:
+            burstLimit: 10
+            rateLimit: 5
+      - medium: # 50 QPS
+          quota:
+            limit: 5000000 # 50 * 60 * 60 * 24 rounded up
+            period: DAY
+          throttle:
+            burstLimit: 100
+            rateLimit: 50
+      - high: # 100 QPS
+          quota:
+            limit: 10000000 # 100 * 60 * 60 * 24 rounded up
+            period: DAY
+          throttle:
+            burstLimit: 200
+            rateLimit: 100
+
+custom:
+  # Enable or disable caching globally
+  apiGatewayCaching:
+    enabled: true
+    clusterSize: '0.5' # defaults to '0.5'
+    ttlInSeconds: 300 # defaults to the maximum allowed: 3600
+  contentEncoding:
+    minimumCompressionSize: 0 # Minimum body size required for compression in bytes
+  config:
+    mainnet:
+      jsonRpcProvider: http://mainnet.node.liquifi.org:8545
+      poolFactoryAddress: "0xE29EAB218F8CbB7bF97640d197696d8f2CA95708"
+      theGraphUri: https://api.thegraph.com/subgraphs/name/liquifi-project/liquifi
+    ropsten:
+      jsonRpcProvider: http://ropsten.node.liquifi.org:8545
+      poolFactoryAddress: "0x5EB953fF569550e1c5227379df33E910637b7e28"
+      theGraphUri: https://api.thegraph.com/subgraphs/name/liquifi-project/liquifi-ropsten
+    rinkeby:
+      jsonRpcProvider: http://rinkeby.node.liquifi.org:8545
+      poolFactoryAddress: "0xD6BA6df1Bd1BB27c3a3472CB396e68d1Ed0DBD3b"
+      theGraphUri: https://api.thegraph.com/subgraphs/name/liquifi-project/liquifi-rinkeby
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-api-gateway-caching
+  - serverless-content-encoding
+
+functions:
+  summary:
+    handler: src/summary.handler
+    events:
+      - http:
+          method: get
+          path: /summary
+          private: true
+          caching:
+            enabled: true
+            ttlInSeconds: 900
+  assets:
+    handler: src/assets.handler
+    events:
+      - http:
+          method: get
+          path: /assets
+          private: true
+          caching:
+            enabled: true
+            ttlInSeconds: 900
+  tickers:
+    handler: src/tickers.handler
+    events:
+      - http:
+          method: get
+          path: /tickers
+          private: true
+          caching:
+            enabled: true
+            ttlInSeconds: 900
+  trades:
+    handler: src/trades.handler
+    events:
+      - http:
+          method: get
+          path: /trades/{pair}
+          private: true
+          caching:
+            enabled: true
+            cacheKeyParameters:
+              - name: request.path.pair
+            ttlInSeconds: 900
+  orderbook:
+    handler: src/orderbook.handler
+    events:
+      - http:
+          method: get
+          path: /orderbook/{pair}
+          private: true
+          caching:
+            enabled: true
+            cacheKeyParameters:
+              - name: request.path.pair
+            ttlInSeconds: 3600

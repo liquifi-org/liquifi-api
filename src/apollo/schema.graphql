@@ -1,0 +1,924 @@
+directive @entity on OBJECT
+
+directive @derivedFrom(field: String) on FIELD_DEFINITION
+
+directive @subgraphId(id: String) on OBJECT
+
+type _Block_ {
+  """The hash of the block"""
+  hash: Bytes
+
+  """The block number"""
+  number: Int!
+}
+
+"""The type for the top-level _meta field"""
+type _Meta_ {
+  """
+  Information about a specific subgraph block. The hash of the block
+  will be null if the _meta field has a block constraint that asks for
+  a block number. It will be filled if the _meta field has no block constraint
+  and therefore asks for the latest  block
+  
+  """
+  block: _Block_!
+
+  """The deployment ID"""
+  deployment: String!
+
+  """If `true`, the subgraph encountered indexing errors at some past block"""
+  hasIndexingErrors: Boolean!
+}
+
+enum _SubgraphErrorPolicy_ {
+  """Data will be returned even if the subgraph has indexing errors"""
+  allow
+
+  """
+  If the subgraph has indexing errors, data will be omitted. The default.
+  """
+  deny
+}
+
+scalar BigDecimal
+
+scalar BigInt
+
+input Block_height {
+  hash: Bytes
+  number: Int
+}
+
+scalar Bytes
+
+type DelayedSwapOperation {
+  id: ID!
+  tokenIn: Bytes
+  amountIn: BigInt
+  tokenOut: Bytes
+  amountAOut: BigInt
+  amountBOut: BigInt
+  from: Bytes
+  to: Bytes
+  convertETH: Int
+  timeout: BigInt
+  orderId: BigInt
+  previousBreakHash: Bytes
+  breaks: [BigInt!]
+  orderClosed: Boolean
+  orderClaimed: Boolean
+  addOrderTxHash: Bytes
+  addOrderTxTimestamp: BigInt
+  claimOrderTxHash: Bytes
+  claimOrderTxTimestamp: BigInt
+}
+
+input DelayedSwapOperation_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  tokenIn: Bytes
+  tokenIn_not: Bytes
+  tokenIn_in: [Bytes!]
+  tokenIn_not_in: [Bytes!]
+  tokenIn_contains: Bytes
+  tokenIn_not_contains: Bytes
+  amountIn: BigInt
+  amountIn_not: BigInt
+  amountIn_gt: BigInt
+  amountIn_lt: BigInt
+  amountIn_gte: BigInt
+  amountIn_lte: BigInt
+  amountIn_in: [BigInt!]
+  amountIn_not_in: [BigInt!]
+  tokenOut: Bytes
+  tokenOut_not: Bytes
+  tokenOut_in: [Bytes!]
+  tokenOut_not_in: [Bytes!]
+  tokenOut_contains: Bytes
+  tokenOut_not_contains: Bytes
+  amountAOut: BigInt
+  amountAOut_not: BigInt
+  amountAOut_gt: BigInt
+  amountAOut_lt: BigInt
+  amountAOut_gte: BigInt
+  amountAOut_lte: BigInt
+  amountAOut_in: [BigInt!]
+  amountAOut_not_in: [BigInt!]
+  amountBOut: BigInt
+  amountBOut_not: BigInt
+  amountBOut_gt: BigInt
+  amountBOut_lt: BigInt
+  amountBOut_gte: BigInt
+  amountBOut_lte: BigInt
+  amountBOut_in: [BigInt!]
+  amountBOut_not_in: [BigInt!]
+  from: Bytes
+  from_not: Bytes
+  from_in: [Bytes!]
+  from_not_in: [Bytes!]
+  from_contains: Bytes
+  from_not_contains: Bytes
+  to: Bytes
+  to_not: Bytes
+  to_in: [Bytes!]
+  to_not_in: [Bytes!]
+  to_contains: Bytes
+  to_not_contains: Bytes
+  convertETH: Int
+  convertETH_not: Int
+  convertETH_gt: Int
+  convertETH_lt: Int
+  convertETH_gte: Int
+  convertETH_lte: Int
+  convertETH_in: [Int!]
+  convertETH_not_in: [Int!]
+  timeout: BigInt
+  timeout_not: BigInt
+  timeout_gt: BigInt
+  timeout_lt: BigInt
+  timeout_gte: BigInt
+  timeout_lte: BigInt
+  timeout_in: [BigInt!]
+  timeout_not_in: [BigInt!]
+  orderId: BigInt
+  orderId_not: BigInt
+  orderId_gt: BigInt
+  orderId_lt: BigInt
+  orderId_gte: BigInt
+  orderId_lte: BigInt
+  orderId_in: [BigInt!]
+  orderId_not_in: [BigInt!]
+  previousBreakHash: Bytes
+  previousBreakHash_not: Bytes
+  previousBreakHash_in: [Bytes!]
+  previousBreakHash_not_in: [Bytes!]
+  previousBreakHash_contains: Bytes
+  previousBreakHash_not_contains: Bytes
+  breaks: [BigInt!]
+  breaks_not: [BigInt!]
+  breaks_contains: [BigInt!]
+  breaks_not_contains: [BigInt!]
+  orderClosed: Boolean
+  orderClosed_not: Boolean
+  orderClosed_in: [Boolean!]
+  orderClosed_not_in: [Boolean!]
+  orderClaimed: Boolean
+  orderClaimed_not: Boolean
+  orderClaimed_in: [Boolean!]
+  orderClaimed_not_in: [Boolean!]
+  addOrderTxHash: Bytes
+  addOrderTxHash_not: Bytes
+  addOrderTxHash_in: [Bytes!]
+  addOrderTxHash_not_in: [Bytes!]
+  addOrderTxHash_contains: Bytes
+  addOrderTxHash_not_contains: Bytes
+  addOrderTxTimestamp: BigInt
+  addOrderTxTimestamp_not: BigInt
+  addOrderTxTimestamp_gt: BigInt
+  addOrderTxTimestamp_lt: BigInt
+  addOrderTxTimestamp_gte: BigInt
+  addOrderTxTimestamp_lte: BigInt
+  addOrderTxTimestamp_in: [BigInt!]
+  addOrderTxTimestamp_not_in: [BigInt!]
+  claimOrderTxHash: Bytes
+  claimOrderTxHash_not: Bytes
+  claimOrderTxHash_in: [Bytes!]
+  claimOrderTxHash_not_in: [Bytes!]
+  claimOrderTxHash_contains: Bytes
+  claimOrderTxHash_not_contains: Bytes
+  claimOrderTxTimestamp: BigInt
+  claimOrderTxTimestamp_not: BigInt
+  claimOrderTxTimestamp_gt: BigInt
+  claimOrderTxTimestamp_lt: BigInt
+  claimOrderTxTimestamp_gte: BigInt
+  claimOrderTxTimestamp_lte: BigInt
+  claimOrderTxTimestamp_in: [BigInt!]
+  claimOrderTxTimestamp_not_in: [BigInt!]
+}
+
+enum DelayedSwapOperation_orderBy {
+  id
+  tokenIn
+  amountIn
+  tokenOut
+  amountAOut
+  amountBOut
+  from
+  to
+  convertETH
+  timeout
+  orderId
+  previousBreakHash
+  breaks
+  orderClosed
+  orderClaimed
+  addOrderTxHash
+  addOrderTxTimestamp
+  claimOrderTxHash
+  claimOrderTxTimestamp
+}
+
+type ExchangeVolume {
+  id: ID!
+  date: BigInt!
+  poolAddress: Bytes
+  tokenAVolume: BigInt!
+  tokenBVolume: BigInt!
+}
+
+input ExchangeVolume_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  date: BigInt
+  date_not: BigInt
+  date_gt: BigInt
+  date_lt: BigInt
+  date_gte: BigInt
+  date_lte: BigInt
+  date_in: [BigInt!]
+  date_not_in: [BigInt!]
+  poolAddress: Bytes
+  poolAddress_not: Bytes
+  poolAddress_in: [Bytes!]
+  poolAddress_not_in: [Bytes!]
+  poolAddress_contains: Bytes
+  poolAddress_not_contains: Bytes
+  tokenAVolume: BigInt
+  tokenAVolume_not: BigInt
+  tokenAVolume_gt: BigInt
+  tokenAVolume_lt: BigInt
+  tokenAVolume_gte: BigInt
+  tokenAVolume_lte: BigInt
+  tokenAVolume_in: [BigInt!]
+  tokenAVolume_not_in: [BigInt!]
+  tokenBVolume: BigInt
+  tokenBVolume_not: BigInt
+  tokenBVolume_gt: BigInt
+  tokenBVolume_lt: BigInt
+  tokenBVolume_gte: BigInt
+  tokenBVolume_lte: BigInt
+  tokenBVolume_in: [BigInt!]
+  tokenBVolume_not_in: [BigInt!]
+}
+
+enum ExchangeVolume_orderBy {
+  id
+  date
+  poolAddress
+  tokenAVolume
+  tokenBVolume
+}
+
+input FilterByFromWallet {
+  from: Bytes
+}
+
+type LiquidityDepositOperation {
+  id: ID!
+  token1: Bytes!
+  amount1: BigInt!
+  token2: Bytes!
+  amount2: BigInt!
+  liquidityOut: BigInt!
+  from: Bytes!
+  to: Bytes!
+  convertETH: Int
+  txHash: Bytes
+  txTimestamp: BigInt
+}
+
+input LiquidityDepositOperation_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  token1: Bytes
+  token1_not: Bytes
+  token1_in: [Bytes!]
+  token1_not_in: [Bytes!]
+  token1_contains: Bytes
+  token1_not_contains: Bytes
+  amount1: BigInt
+  amount1_not: BigInt
+  amount1_gt: BigInt
+  amount1_lt: BigInt
+  amount1_gte: BigInt
+  amount1_lte: BigInt
+  amount1_in: [BigInt!]
+  amount1_not_in: [BigInt!]
+  token2: Bytes
+  token2_not: Bytes
+  token2_in: [Bytes!]
+  token2_not_in: [Bytes!]
+  token2_contains: Bytes
+  token2_not_contains: Bytes
+  amount2: BigInt
+  amount2_not: BigInt
+  amount2_gt: BigInt
+  amount2_lt: BigInt
+  amount2_gte: BigInt
+  amount2_lte: BigInt
+  amount2_in: [BigInt!]
+  amount2_not_in: [BigInt!]
+  liquidityOut: BigInt
+  liquidityOut_not: BigInt
+  liquidityOut_gt: BigInt
+  liquidityOut_lt: BigInt
+  liquidityOut_gte: BigInt
+  liquidityOut_lte: BigInt
+  liquidityOut_in: [BigInt!]
+  liquidityOut_not_in: [BigInt!]
+  from: Bytes
+  from_not: Bytes
+  from_in: [Bytes!]
+  from_not_in: [Bytes!]
+  from_contains: Bytes
+  from_not_contains: Bytes
+  to: Bytes
+  to_not: Bytes
+  to_in: [Bytes!]
+  to_not_in: [Bytes!]
+  to_contains: Bytes
+  to_not_contains: Bytes
+  convertETH: Int
+  convertETH_not: Int
+  convertETH_gt: Int
+  convertETH_lt: Int
+  convertETH_gte: Int
+  convertETH_lte: Int
+  convertETH_in: [Int!]
+  convertETH_not_in: [Int!]
+  txHash: Bytes
+  txHash_not: Bytes
+  txHash_in: [Bytes!]
+  txHash_not_in: [Bytes!]
+  txHash_contains: Bytes
+  txHash_not_contains: Bytes
+  txTimestamp: BigInt
+  txTimestamp_not: BigInt
+  txTimestamp_gt: BigInt
+  txTimestamp_lt: BigInt
+  txTimestamp_gte: BigInt
+  txTimestamp_lte: BigInt
+  txTimestamp_in: [BigInt!]
+  txTimestamp_not_in: [BigInt!]
+}
+
+enum LiquidityDepositOperation_orderBy {
+  id
+  token1
+  amount1
+  token2
+  amount2
+  liquidityOut
+  from
+  to
+  convertETH
+  txHash
+  txTimestamp
+}
+
+type LiquidityWithdrawOperation {
+  id: ID!
+  token1: Bytes!
+  amount1: BigInt!
+  token2: Bytes!
+  amount2: BigInt!
+  liquidityIn: BigInt!
+  from: Bytes!
+  to: Bytes!
+  convertETH: Int
+  txHash: Bytes
+  txTimestamp: BigInt
+}
+
+input LiquidityWithdrawOperation_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  token1: Bytes
+  token1_not: Bytes
+  token1_in: [Bytes!]
+  token1_not_in: [Bytes!]
+  token1_contains: Bytes
+  token1_not_contains: Bytes
+  amount1: BigInt
+  amount1_not: BigInt
+  amount1_gt: BigInt
+  amount1_lt: BigInt
+  amount1_gte: BigInt
+  amount1_lte: BigInt
+  amount1_in: [BigInt!]
+  amount1_not_in: [BigInt!]
+  token2: Bytes
+  token2_not: Bytes
+  token2_in: [Bytes!]
+  token2_not_in: [Bytes!]
+  token2_contains: Bytes
+  token2_not_contains: Bytes
+  amount2: BigInt
+  amount2_not: BigInt
+  amount2_gt: BigInt
+  amount2_lt: BigInt
+  amount2_gte: BigInt
+  amount2_lte: BigInt
+  amount2_in: [BigInt!]
+  amount2_not_in: [BigInt!]
+  liquidityIn: BigInt
+  liquidityIn_not: BigInt
+  liquidityIn_gt: BigInt
+  liquidityIn_lt: BigInt
+  liquidityIn_gte: BigInt
+  liquidityIn_lte: BigInt
+  liquidityIn_in: [BigInt!]
+  liquidityIn_not_in: [BigInt!]
+  from: Bytes
+  from_not: Bytes
+  from_in: [Bytes!]
+  from_not_in: [Bytes!]
+  from_contains: Bytes
+  from_not_contains: Bytes
+  to: Bytes
+  to_not: Bytes
+  to_in: [Bytes!]
+  to_not_in: [Bytes!]
+  to_contains: Bytes
+  to_not_contains: Bytes
+  convertETH: Int
+  convertETH_not: Int
+  convertETH_gt: Int
+  convertETH_lt: Int
+  convertETH_gte: Int
+  convertETH_lte: Int
+  convertETH_in: [Int!]
+  convertETH_not_in: [Int!]
+  txHash: Bytes
+  txHash_not: Bytes
+  txHash_in: [Bytes!]
+  txHash_not_in: [Bytes!]
+  txHash_contains: Bytes
+  txHash_not_contains: Bytes
+  txTimestamp: BigInt
+  txTimestamp_not: BigInt
+  txTimestamp_gt: BigInt
+  txTimestamp_lt: BigInt
+  txTimestamp_gte: BigInt
+  txTimestamp_lte: BigInt
+  txTimestamp_in: [BigInt!]
+  txTimestamp_not_in: [BigInt!]
+}
+
+enum LiquidityWithdrawOperation_orderBy {
+  id
+  token1
+  amount1
+  token2
+  amount2
+  liquidityIn
+  from
+  to
+  convertETH
+  txHash
+  txTimestamp
+}
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+type PendingDelayedSwapOperations {
+  id: ID!
+  operations: [String!]!
+}
+
+input PendingDelayedSwapOperations_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  operations: [String!]
+  operations_not: [String!]
+  operations_contains: [String!]
+  operations_not_contains: [String!]
+}
+
+enum PendingDelayedSwapOperations_orderBy {
+  id
+  operations
+}
+
+type Query {
+  simpleSwapOperation(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): SimpleSwapOperation
+  simpleSwapOperations(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: SimpleSwapOperation_orderBy
+    orderDirection: OrderDirection
+    where: SimpleSwapOperation_filter
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): [SimpleSwapOperation!]!
+  delayedSwapOperation(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): DelayedSwapOperation
+  delayedSwapOperations(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: DelayedSwapOperation_orderBy
+    orderDirection: OrderDirection
+    where: DelayedSwapOperation_filter
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): [DelayedSwapOperation!]!
+  pendingDelayedSwapOperations(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: PendingDelayedSwapOperations_orderBy
+    orderDirection: OrderDirection
+    where: PendingDelayedSwapOperations_filter
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): [PendingDelayedSwapOperations!]!
+  exchangeVolume(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): ExchangeVolume
+  exchangeVolumes(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: ExchangeVolume_orderBy
+    orderDirection: OrderDirection
+    where: ExchangeVolume_filter
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): [ExchangeVolume!]!
+  liquidityDepositOperation(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): LiquidityDepositOperation
+  liquidityDepositOperations(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: LiquidityDepositOperation_orderBy
+    orderDirection: OrderDirection
+    where: LiquidityDepositOperation_filter
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): [LiquidityDepositOperation!]!
+  liquidityWithdrawOperation(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): LiquidityWithdrawOperation
+  liquidityWithdrawOperations(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: LiquidityWithdrawOperation_orderBy
+    orderDirection: OrderDirection
+    where: LiquidityWithdrawOperation_filter
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): [LiquidityWithdrawOperation!]!
+
+  """Access to subgraph metadata"""
+  _meta(block: Block_height): _Meta_
+}
+
+type SimpleSwapOperation {
+  id: ID!
+  tokenIn: Bytes!
+  amountIn: BigInt!
+  tokenOut: Bytes!
+  amountOut: BigInt!
+  from: Bytes!
+  to: Bytes!
+  convertETH: Int
+  fee: BigInt!
+  txHash: Bytes
+  txTimestamp: BigInt
+}
+
+input SimpleSwapOperation_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  tokenIn: Bytes
+  tokenIn_not: Bytes
+  tokenIn_in: [Bytes!]
+  tokenIn_not_in: [Bytes!]
+  tokenIn_contains: Bytes
+  tokenIn_not_contains: Bytes
+  amountIn: BigInt
+  amountIn_not: BigInt
+  amountIn_gt: BigInt
+  amountIn_lt: BigInt
+  amountIn_gte: BigInt
+  amountIn_lte: BigInt
+  amountIn_in: [BigInt!]
+  amountIn_not_in: [BigInt!]
+  tokenOut: Bytes
+  tokenOut_not: Bytes
+  tokenOut_in: [Bytes!]
+  tokenOut_not_in: [Bytes!]
+  tokenOut_contains: Bytes
+  tokenOut_not_contains: Bytes
+  amountOut: BigInt
+  amountOut_not: BigInt
+  amountOut_gt: BigInt
+  amountOut_lt: BigInt
+  amountOut_gte: BigInt
+  amountOut_lte: BigInt
+  amountOut_in: [BigInt!]
+  amountOut_not_in: [BigInt!]
+  from: Bytes
+  from_not: Bytes
+  from_in: [Bytes!]
+  from_not_in: [Bytes!]
+  from_contains: Bytes
+  from_not_contains: Bytes
+  to: Bytes
+  to_not: Bytes
+  to_in: [Bytes!]
+  to_not_in: [Bytes!]
+  to_contains: Bytes
+  to_not_contains: Bytes
+  convertETH: Int
+  convertETH_not: Int
+  convertETH_gt: Int
+  convertETH_lt: Int
+  convertETH_gte: Int
+  convertETH_lte: Int
+  convertETH_in: [Int!]
+  convertETH_not_in: [Int!]
+  fee: BigInt
+  fee_not: BigInt
+  fee_gt: BigInt
+  fee_lt: BigInt
+  fee_gte: BigInt
+  fee_lte: BigInt
+  fee_in: [BigInt!]
+  fee_not_in: [BigInt!]
+  txHash: Bytes
+  txHash_not: Bytes
+  txHash_in: [Bytes!]
+  txHash_not_in: [Bytes!]
+  txHash_contains: Bytes
+  txHash_not_contains: Bytes
+  txTimestamp: BigInt
+  txTimestamp_not: BigInt
+  txTimestamp_gt: BigInt
+  txTimestamp_lt: BigInt
+  txTimestamp_gte: BigInt
+  txTimestamp_lte: BigInt
+  txTimestamp_in: [BigInt!]
+  txTimestamp_not_in: [BigInt!]
+}
+
+enum SimpleSwapOperation_orderBy {
+  id
+  tokenIn
+  amountIn
+  tokenOut
+  amountOut
+  from
+  to
+  convertETH
+  fee
+  txHash
+  txTimestamp
+}
+
+type Subscription {
+  simpleSwapOperation(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): SimpleSwapOperation
+  simpleSwapOperations(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: SimpleSwapOperation_orderBy
+    orderDirection: OrderDirection
+    where: SimpleSwapOperation_filter
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): [SimpleSwapOperation!]!
+  delayedSwapOperation(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): DelayedSwapOperation
+  delayedSwapOperations(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: DelayedSwapOperation_orderBy
+    orderDirection: OrderDirection
+    where: DelayedSwapOperation_filter
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): [DelayedSwapOperation!]!
+  pendingDelayedSwapOperations(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: PendingDelayedSwapOperations_orderBy
+    orderDirection: OrderDirection
+    where: PendingDelayedSwapOperations_filter
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): [PendingDelayedSwapOperations!]!
+  exchangeVolume(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): ExchangeVolume
+  exchangeVolumes(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: ExchangeVolume_orderBy
+    orderDirection: OrderDirection
+    where: ExchangeVolume_filter
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): [ExchangeVolume!]!
+  liquidityDepositOperation(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): LiquidityDepositOperation
+  liquidityDepositOperations(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: LiquidityDepositOperation_orderBy
+    orderDirection: OrderDirection
+    where: LiquidityDepositOperation_filter
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): [LiquidityDepositOperation!]!
+  liquidityWithdrawOperation(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): LiquidityWithdrawOperation
+  liquidityWithdrawOperations(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: LiquidityWithdrawOperation_orderBy
+    orderDirection: OrderDirection
+    where: LiquidityWithdrawOperation_filter
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): [LiquidityWithdrawOperation!]!
+
+  """Access to subgraph metadata"""
+  _meta(block: Block_height): _Meta_
+}
+
