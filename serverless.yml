@@ -65,6 +65,11 @@ custom:
       jsonRpcProvider: http://rinkeby.node.liquifi.org:8545
       poolFactoryAddress: "0xD6BA6df1Bd1BB27c3a3472CB396e68d1Ed0DBD3b"
       theGraphUri: https://api.thegraph.com/subgraphs/name/liquifi-project/liquifi-rinkeby
+    bscmainnet:
+      jsonRpcProvider: https://bsc-dataseed.binance.org/
+      poolFactoryAddress: "0x61eee5a6c13c358101487f3b7c7dd9863590c350"
+      theGraphUri: https://graph.bsc.net.ru/subgraphs/name/liquifi-project/liquifi-bsc
+
 
 plugins:
   - serverless-plugin-typescript
