@@ -53,7 +53,7 @@ const delayedOperationToTrade = (operation: DelayedSwapOperation, baseToken: str
     type,
     base_volume: baseVolume.toString(),
     quote_volume: quoteVolume.toString(),
-    price: quoteVolume.dividedBy(baseVolume).toString(),
+    price: new BigNumber(quoteVolume).dividedBy(baseVolume).toString(),
     timestamp: operation.claimOrderTxTimestamp
   }
 }
