@@ -5,6 +5,7 @@ import { ExchangeVolumeQuery, ExchangeVolumeQueryVariables } from './generated/s
 import BigNumber from 'bignumber.js'
 import { loadPools } from './_shared'
 import { OK, ServerError } from './_response'
+import { erc20 } from './_contracts'
 
 class PoolSummary {
   [poolId: string]: {
@@ -26,11 +27,19 @@ export const loadSummary = async (): Promise<PoolSummary> => {
   const pools = await loadPoolsData()
   const volumes = await loadVolumes()
 
-  const result: PoolSummary = {}
-  for (const { id, address, last_price } of pools) {
-    const { base_volume, quote_volume } = volumes[address.toLowerCase()] ?? { base_volume: 0, quote_volume: 0 }
-    result[id] = { base_volume, quote_volume, last_price }
+  const parallel = async (pls: DelayedExchangePool[]): Promise<PoolSummary> => {
+    const res: PoolSummary = {}
+    const vlms: PoolSummary = {}
+    await Promise.all(
+    pls.map(async (pool) => {
+	const { base_volume, quote_volume } = vlms[pool['address'].toLowerCase()] ?? { base_volume: 0, quote_volume: 0 }
+        res[pool['id']] = { 'base_volume': base_volume, 'quote_volume': quote_volume, 'last_price': pool['last_price'] }
+      })
+    );
+    return res
   }
+
+  const result: PoolSummary = await parallel(pools, volumes)
   return result
 }
 
