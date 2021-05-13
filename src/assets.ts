@@ -24,11 +24,17 @@ export const handler: APIGatewayProxyHandler = async () => {
 
 export const loadAssets = async (): Promise<AssetsResponse> => {
   const pools = await loadPools()
-
-  const result: AssetsResponse = {}
-  for (const pool of pools)
-    for (const token of [await pool.tokenA(), await pool.tokenB()])
-      result[token] = result[token] ?? (await loadTokenData(token))
+  const parallel = async (pls: DelayedExchangePool[]): Promise<AssetsResponse> => {
+    const res: AssetsResponse = {}
+    await Promise.all(
+      pls.map(async (pool) => {
+        for (const token of [await pool.tokenA(), await pool.tokenB()])
+        res[token] = res[token] ?? (await loadTokenData(token))
+      })
+    );
+    return res
+  }
+  const result: AssetsResponse = await parallel(pools)
   return result
 }
 
