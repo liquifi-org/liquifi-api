@@ -5,7 +5,7 @@ import { ExchangeVolumeQuery, ExchangeVolumeQueryVariables } from './generated/s
 import BigNumber from 'bignumber.js'
 import { loadPools } from './_shared'
 import { OK, ServerError } from './_response'
-import { erc20 } from './_contracts'
+import { erc20, DelayedExchangePool } from './_contracts'
 
 class PoolSummary {
   [poolId: string]: {
@@ -27,9 +27,8 @@ export const loadSummary = async (): Promise<PoolSummary> => {
   const pools = await loadPoolsData()
   const volumes = await loadVolumes()
 
-  const parallel = async (pls: DelayedExchangePool[]): Promise<PoolSummary> => {
+  const parallel = async (pls: DelayedExchangePool[],vlms: PoolSummary): Promise<PoolSummary> => {
     const res: PoolSummary = {}
-    const vlms: PoolSummary = {}
     await Promise.all(
     pls.map(async (pool) => {
 	const { base_volume, quote_volume } = vlms[pool['address'].toLowerCase()] ?? { base_volume: 0, quote_volume: 0 }
@@ -70,16 +69,26 @@ const loadVolumesByDate = async (date: number) => {
 const loadPoolsData = async (): Promise<{ id: string; address: string; last_price: string }[]> => {
   const pools = await loadPools()
   const result = []
-  for (const pool of pools) {
-    const balances = await pool.poolBalances()
-    const balanceA = new BigNumber(balances.totalBalanceA.sub(balances.balanceALocked).toString())
-    const balanceB = new BigNumber(balances.totalBalanceB.sub(balances.balanceBLocked).toString())
-    result.push({
-      id: `${await pool.tokenA()}_${await pool.tokenB()}`,
-      address: pool.address,
-      last_price: balanceB.dividedBy(balanceA).toString()
-    })
+
+  const parallel = async (pls: DelayedExchangePool[]): Promise<{ id: string; address: string; last_price: string }[]> => {
+    const res = []
+    await Promise.all(
+    pls.map(async (pool) => {
+      const balances = await pool.poolBalances()
+      const balanceA = new BigNumber(balances.totalBalanceA.sub(balances.balanceALocked).toString())
+      const balanceB = new BigNumber(balances.totalBalanceB.sub(balances.balanceBLocked).toString())
+      res.push({
+        id: `${await pool.tokenA()}_${await pool.tokenB()}`,
+        address: pool.address,
+        last_price: balanceB.dividedBy(balanceA).toString()
+      })
+
+      })
+    );
+    return res
   }
+
+  const result = await parallel(pools)
 
   return result
 }

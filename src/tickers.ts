@@ -28,8 +28,25 @@ export const handler: APIGatewayProxyHandler = async () => {
 }
 
 const loadTikers = async (): Promise<Tikers> => {
-  const summary = await loadSummary()
-  const assets = await loadAssets()
+  const parallel = async (): Promise<{ summary: PoolSummary; assets: AssetsResponse; }> => {
+    const res = {}
+    const list = [
+      {'name': 'summary', 'func' : loadSummary, 'res': null},
+      {'name': 'assets', 'func' : loadAssets, 'res' : null}
+    ]
+
+    await Promise.all(
+      list.map(async (o) => {
+        res[o['name']] = o['res'] = await o['func']()
+      })
+    );
+    return res
+  }
+
+  const loaded = await  parallel()
+
+  const summary = loaded['summary']
+  const assets = loaded['assets']
   const result: Tikers = {}
 
   for (const pool in summary) {
